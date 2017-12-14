@@ -88,8 +88,6 @@ function playVideoOnScroll(){
                     $('.colContenido').append(ht);
                     
                   }
-              
-                  
           
         },
         error:function(er){
@@ -99,10 +97,48 @@ function playVideoOnScroll(){
   
 }
 
-function Cargar
+ function llenado(campo){
+  let selector="select"+campo;
+
+  let form= new FormData();
+  form.append("campo",campo);
+  $.ajax({
+    url:"./llenado.php",
+    dataType:'text',
+    cache: false,
+    contentType: false,
+    processData: false,
+    data:form,
+    type:'POST',
+    success: (response)=>{
+     let arr=JSON.parse(response);
+      
+      let tex="";
+      //for (var i = 0; i <= arr.length - 1; i++) {
+      for(value in arr)
+        tex +='<option value="'+arr[value]+'">'+arr[value]+'</option>';
+      //}
+      $("#"+selector).append(tex);
+    },
+    error: (err)=>{
+      alert(err);
+    }
+
+  })
+
+}
 
 $(function(){
   $("#mostrarTodos").click(mostrartodo);
+
+
+  $("#selectCiudad").css("display","block");
+  $("#selectTipo").css("display","block");
+
+  $("#selectCiudad").load(llenado("Ciudad"));
+})
+$(function(){
+  $("#selectTipo").load(llenado("Tipo"));
 })
   
  
