@@ -220,21 +220,33 @@ $(function(){
   
   var filtrar={
     btnMostrar: $("#mostrarTodos"),
+    selectCiudad:$("#selectCiudad"),
+    selectTipo:$("#selectTipo"),
+
     Init:function(){
       var self=this
+      $("#selectCiudad").css("display","block")
+      $("#selectTipo").css("display","block")
       self.mostrarTodos()
+      self.mostrarSelect(selectCiudad,"Ciudad")
+      self.mostrarSelect(selectTipo,"Tipo")
+
     },
     mostrarTodos:function(){
       let self = this
       self.btnMostrar.on('click',(e)=>{
         let tipo='todos'
         var form={tipo: tipo}
-        //form.append('tipo',tipo)
-        self.enviarDatos("index.php",form)
+        self.enviarDatos("index.php",form,"")
 
       })  
     },
-    enviarDatos:function(accion,form){
+    mostrarSelect:function(selector,campo){
+      let self =this
+      let form={campo:campo}
+      self.enviarDatos("llenado.php",form,selector)
+    },
+    enviarDatos:function(accion,form, selector){
       let self =this
       $.ajax({
         url:'./'+accion,
@@ -246,7 +258,7 @@ $(function(){
           if(accion=='index.php'){
             self.llenarContenido(arr)
           }else{
-            self.llenarSelect()
+            self.llenarSelect(arr,selector)
           }
       })
     },
@@ -270,8 +282,14 @@ $(function(){
                     
       }
     },
-    llenarSelect:function(){
-      aler('')
+    llenarSelect:function(arr,selector){
+      let self = this
+      let tex="";
+      //for (var i = 0; i <= arr.length - 1; i++) {
+      for(value in arr)
+        tex +='<option value="'+arr[value]+'">'+arr[value]+'</option>';
+      //}
+      $("#"+selector.id).append(tex);
     }
 
 
