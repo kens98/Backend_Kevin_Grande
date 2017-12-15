@@ -9,23 +9,36 @@ if(isset($_POST['tipo'])){
 		echo json_encode($datos);
 
 	}
-	if($_POST['tipo']=="filtroCiudad"){
-		$info=null;
-		$datos=cargarDatos();
-		echo json_encode($datos);
-	}
-	if($_POST['tipo']=="filtroTipo"){
-		$info=null;
-		$datos=cargarDatos();
-		echo json_encode($datos);
-	}
-	if($_POST['tipo']=="filtroPrecio"){
-		$menor=$_POST['valormenor'];
-		$mayor=$_POST['valormayor'];
-		$datos=CargarFiltroValor("Precio",$menor,">");
-		$datosfiltrados=CargarFiltroValores($datos,"Precio",$mayor,"<");
-		//echo json_encode($datos);
-		echo json_encode($datosfiltrados);
+	if($_POST['tipo']=="filtro"){
+		$ciudad=$_POST['ciudad'];
+		$tipo=$_POST['selecttipo'];
+		$menor=$_POST['menor'];
+		$mayor=$_POST['mayor'];
+
+		$infor=null;
+		$infor=cargarDatos();
+		$data=array();
+		$precio=null;
+		for($i=0;$i<count($infor);$i++){
+			$precio=str_replace('$','',str_replace(',','',str_replace(' ','',$infor[$i]["Precio"])));
+			// filtro con todas las caracteristicas
+			if($precio>=$menor && $precio<=$mayor && $infor[$i]["Ciudad"]==$ciudad && $infor[$i]["Tipo"]==$tipo){
+				array_push($data, $infor[$i]);
+			}
+			// filtro con Precios, Ciudad, sin Tipo
+			else if($precio>=$menor && $precio<=$mayor && $infor[$i]["Ciudad"]==$ciudad && ""==$tipo){
+				array_push($data, $infor[$i]);
+			}
+			// filtro con Precios, Tipo, sin Ciudad
+			else if($precio>=$menor && $precio<=$mayor && ""==$ciudad && $infor[$i]["Tipo"]==$tipo){
+				array_push($data, $infor[$i]);
+			}
+			else if($precio>=$menor && $precio<=$mayor && ""==$ciudad && ""==$tipo){
+				array_push($data, $infor[$i]);
+			}
+			
+		}
+		echo json_encode($data);
 	}
 }
 else{
