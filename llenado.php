@@ -6,7 +6,7 @@
 			echo campos($_POST["campo"]);
 	}
 	function campos($campos){
-		$datos=CargaFiltro($campos);
+		$datos=array_unique(CargaFiltro($campos));
 		return json_encode($datos);
 	}
 ?>

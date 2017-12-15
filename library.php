@@ -14,20 +14,71 @@ function CargaFiltro($campo){
 	$infor= [];
 	foreach ($archivo as $key => $value) {
 		$distinto=true;
-		/*foreach($infor as $key1 => $value1){
-			if($value[$campo] == $value1[$key1]){
-				$distinto=false;
-			}
-		}
-		if($distinto){
-			array_push($infor, $value[$key][$campo]);
-		}*/
 		array_push($infor, $value[$campo]);
 		
 	}
 
-	return array_unique($infor);
+	return $infor;
 		
+}
+function CargarFiltroValor($campo, $valor,$opcion){
+	$datos=cargarDatos();
+	$infor=[];
+	foreach ($datos as $key => $value) {
+			
+		foreach($value as $key1 => $value1){
+			$cp=array_search($value[$key1], $value);
+
+			if($cp==$campo){
+				if($opcion=="="){
+					if($value1==$valor){
+						array_push($infor, $datos[$key]);
+					}
+				}
+				elseif($opcion==">"){
+					if(floatval(str_replace("$","",str_replace(",","",$value1)))>=floatval($valor)){
+						array_push($infor, $datos[$key]);
+					}
+				}
+				elseif($opcion=="<"){
+					if(floatval(str_replace("$","",str_replace(",","",$value1)))<=floatval($valor)){
+						array_push($infor, $datos[$key]);
+					}
+				}
+			}
+		}
+	}
+	return $infor;
+}
+
+function CargarFiltroValores($DataAnterior,$campo,$valor,$opcion){
+	$datos=$DataAnterior;
+	$infor=[];
+	foreach ($datos as $key => $value) {
+			
+		foreach($value as $key1 => $value1){
+			$cp=array_search($value[$key1], $value);
+		
+			if($cp==$campo){
+				if($opcion=="="){
+					if($value1==$valor){
+						array_push($infor, $datos[$key]);
+					}
+				}
+				elseif($opcion==">"){
+					if(floatval(str_replace("$","",str_replace(",","",$value1)))>=floatval($valor)){
+						array_push($infor, $datos[$key]);
+					}
+				}
+				elseif($opcion=="<"){
+					if(floatval(str_replace("$","",str_replace(",","",$value1)))<=floatval($valor)){
+						array_push($infor, $datos[$key]);
+					}
+				}
+			}
+		}
+	}
+	return $infor;
 }
 
 

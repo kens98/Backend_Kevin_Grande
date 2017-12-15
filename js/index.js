@@ -48,11 +48,21 @@ function playVideoOnScroll(){
     }, 10)
 }
 
+inicializarSlider();
+playVideoOnScroll();
+
+
+
+/*
+  cambios
+
+*/
+
 
 /*
   funcion para mostra todos los datos
 */
- function mostrartodo(event){
+/* function mostrartodo(event){
   event.preventDefault();
   let tipo="todos";
   let form = new FormData();
@@ -128,6 +138,65 @@ function playVideoOnScroll(){
 
 }
 
+
+function filtroPrecios(event){
+  //event.preventDefault();
+
+  let menor =$('.irs-from').text().replace('$', '').replace(',', '').replace(' ', '');
+  
+  let mayor= $('.irs-to').text().replace('$', '').replace(',', '').replace(' ', '');
+  
+  alert(' '+menor+' '+mayor);
+  let form = new FormData();
+  form.append("valormenor",menor);
+  form.append("valormayor",mayor);
+  form.append("tipo","filtroPrecio");
+  //alert("mayor "+mayor+" menor: "+menor);
+  alert();
+
+  
+  $.ajax({
+    url:'./index.php',
+    dataType:'text',
+    cache: false,
+    contentType: false,
+    processData: false,
+    data:form,
+    type:'POST',
+    success:(data)=>{
+      let arr=JSON.parse(data);
+      //let campos="";
+      for (var i = 0; i <= arr.length - 1; i++) {
+
+                    var ht='<div class="itemMostrado"><img src="img/home.jpg" /><div class="card-stacked">' +
+                    '<p class="card-action"><strong>Direccion:</strong> '+arr[i]["Direccion"]+'</p>'+
+                    '<p class="card-action"><strong>Ciudad:</strong> '+arr[i]["Ciudad"]+'</p>'+
+                    '<p class="card-action"><strong>Telefono:</strong> '+arr[i]["Telefono"]+'</p>'+
+                    '<p class="card-action"><strong>Codigo Postal:</strong> '+arr[i]["Codigo_Postal"]+'</p>'+
+                    '<p class="card-action"><strong>Tipo:</strong> '+arr[i]["Tipo"]+'</p>'+
+                    '<p class="card-action"><strong>Precio:</strong> <span class="precioTexto">'+arr[i]["Precio"]+'</span></p>'+
+                    
+                    '</div>'+
+
+                    '</div>';
+
+                    $('.colContenido').append(ht);
+                    
+                  }
+
+      //alert(campos);
+      //alert(data);
+    },
+    error:(err)=>{
+
+    }
+
+  })
+  
+
+}*/
+
+/*
 $(function(){
   $("#mostrarTodos").click(mostrartodo);
 
@@ -139,12 +208,73 @@ $(function(){
 })
 $(function(){
   $("#selectTipo").load(llenado("Tipo"));
+
+
 })
+$(function(){
+   $("#submitButton").click(filtroPrecios());
+})
+
+*/
+$(function(){
   
- 
+  var filtrar={
+    btnMostrar: $("#mostrarTodos"),
+    Init:function(){
+      var self=this
+      self.mostrarTodos()
+    },
+    mostrarTodos:function(){
+      let self = this
+      self.btnMostrar.on('click',(e)=>{
+        let tipo='todos'
+        var form={tipo: tipo}
+        //form.append('tipo',tipo)
+        self.enviarDatos("index.php",form)
+
+      })  
+    },
+    enviarDatos:function(accion,form){
+      let self =this
+      $.ajax({
+        url:'./'+accion,
+        data:form,
+        type:'POST'
+      }).done(function(response){
+          var arr = JSON.parse(response)
+
+          if(accion=='index.php'){
+            self.llenarContenido(arr)
+          }else{
+            self.llenarSelect()
+          }
+      })
+    },
+    llenarContenido:function(arr){
+    
+      for (var i = 0; i <= arr.length - 1; i++) {
+
+          var ht='<div class="itemMostrado">'+
+                  '<img src="img/home.jpg" />'+
+                    '<div class="card-stacked">' +
+                        '<p class="card-action"><strong>Direccion:</strong> '+arr[i]["Direccion"]+'</p>'+
+                        '<p class="card-action"><strong>Ciudad:</strong> '+arr[i]["Ciudad"]+'</p>'+
+                        '<p class="card-action"><strong>Telefono:</strong> '+arr[i]["Telefono"]+'</p>'+
+                        '<p class="card-action"><strong>Codigo Postal:</strong> '+arr[i]["Codigo_Postal"]+'</p>'+
+                        '<p class="card-action"><strong>Tipo:</strong> '+arr[i]["Tipo"]+'</p>'+
+                        '<p class="card-action"><strong>Precio:</strong> <span class="precioTexto">'+arr[i]["Precio"]+'</span></p>'+
+                    '</div>'+
+                  '</div>';
+
+          $('.colContenido').append(ht);
+                    
+      }
+    },
+    llenarSelect:function(){
+      aler('')
+    }
 
 
-
-
-inicializarSlider();
-playVideoOnScroll();
+  }
+  filtrar.Init();
+})
